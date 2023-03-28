@@ -26,6 +26,9 @@ public class UserServiceImpl implements UserDetailsService {
         userDAO.save(user);
     }
 
+    public User findByEmail(String email) {
+        return userDAO.findByEmail(email);
+    }
     public void updateUser(User updatedUser) {
         userDAO.save(updatedUser);
     }
@@ -35,7 +38,7 @@ public class UserServiceImpl implements UserDetailsService {
     }
 
     public User getUser(Long id) {
-        return userDAO.getById(id);
+        return userDAO.findById(id).orElse(null);
     }
 
     public List<User> getAllUsers() {

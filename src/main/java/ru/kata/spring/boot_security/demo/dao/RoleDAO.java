@@ -5,9 +5,6 @@ import org.springframework.stereotype.Repository;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
 
-
+@Repository
 public interface RoleDAO extends JpaRepository<Role, Long> {
-
-
-    Role findByName(String name);
 }

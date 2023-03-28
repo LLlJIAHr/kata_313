@@ -30,18 +30,15 @@ public class User implements UserDetails {
     private String name;
     private String surname;
     private byte age;
+    private String email;
 
 
-    @ManyToMany(fetch = FetchType.EAGER)
+//    @ManyToMany(fetch = FetchType.EAGER)
+@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(name = "users_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
-
-//    public StringBuilder getRolles() {
-//        StringBuilder stringBuilder = new StringBuilder();
-//        while (roles.iterator().hasNext()) {
-//            stringBuilder.append(roles.iterator().next());
-//        }
-//        return stringBuilder;
-//    }
     @Override
     public String toString() {
         return "User{" +
@@ -56,9 +53,6 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
     }
-
-
-
     @Override
     public boolean isAccountNonExpired() {
         return true;

@@ -4,9 +4,7 @@ package ru.kata.spring.boot_security.demo.controller;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.UserService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import java.security.Principal;
@@ -26,21 +24,18 @@ public class UsersController {
     // admin всё ПО URL /admin/
     // добавить логаут на всех страницах с помощью таймлиф
 
-    @GetMapping("/authenticated")
-    @ResponseBody
-    public String pageForAuthenticatedUsers(Principal principal) {
-        User user = userService.findByUsername(principal.getName());
-        return "secured part of web service " + user.getName() + " " + user.getAge();
+    @GetMapping("/login")
+    public String showLogin() {
+        return "/login";
     }
 
-
-
-
+////////////////////////////
     @GetMapping("/profile")
     public String showUser(Principal principal, Model model) {
-        User user = userService.findByUsername(principal.getName());
+        User user = userService.findByEmail(principal.getName());
         model.addAttribute("user", user);
         return "user";
     }
+/////////////////////////
 
 }

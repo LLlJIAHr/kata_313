@@ -12,12 +12,13 @@
     <p th:text="${user.getName()}">VALUE</p>
     <p th:text="${user.getSurname()}">VALUE</p>
     <p th:text="${user.getAge()}">VALUE</p>
-    <p th:each="role: ${user.getRoles()}">
-        <a th:text="${role.getName()}">VALUE </a>
+    <p th:text="${user.getEmail()}">VALUE</p>
+    <p>
+        <a th:each="role: ${user.getRoles()}" th:text="${role.getName()}">VALUE </a>
     </p>
 
     <div sec:authorize="hasRole('ADMIN')">
-        <form method="LINK" th:action="@{/admin/{id}/edit(id=${user.getId()})}">
+        <form method="LINK" th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
             <input type="submit" value="Edit">
         </form>
         <br>

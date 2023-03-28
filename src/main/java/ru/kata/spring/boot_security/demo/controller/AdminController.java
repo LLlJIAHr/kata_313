@@ -29,26 +29,17 @@ public class AdminController {
     // admin всё ПО URL /admin/
     // добавить логаут на всех страницах с помощью таймлиф
 
-//    @GetMapping("")
-//    @ResponseBody
-//    public String pageForAuthenticatedUsers(Principal principal) {
-//        User user = userService.findByUsername(principal.getName());
-//        return "secured part of web service " + user.getName() + " " + user.getAge();
-//    }
-
     @GetMapping("/users")
     public ModelAndView showAllUsers(Model userModel) {
         userModel.addAttribute("allUsers", userService.getAllUsers());
         return new ModelAndView("users");
     }
 
-
-    @GetMapping("/{id}")
+    @GetMapping("/profile/{id}")
     public String showUser(@PathVariable("id") Long id, Model userModel) {
         userModel.addAttribute("user", userService.getUser(id));
         return "user";
     }
-
 
     @GetMapping("/new")
     public ModelAndView newUserPage() {
@@ -66,7 +57,7 @@ public class AdminController {
         return "redirect:/admin/users";
     }
 
-    @GetMapping("/{id}/edit")
+    @GetMapping("/profile/{id}/edit")
     public String editeUserPage(@PathVariable Long id, Model model) {
         model.addAttribute("userUpdate", userService.getUser(id));
         model.addAttribute("allRoles", roleDAO.findAll());
