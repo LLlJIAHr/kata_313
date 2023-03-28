@@ -1,11 +1,29 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org" xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-<head>
-    <title>Spring Security Example</title>
-</head>
-<body>
-<h1>User, welcome spring boot security page!</h1>
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
+      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
+    <head>
+        <title>Spring Security Example</title>
+    </head>
+    <body>
+    <h1>User, welcome spring boot security page!</h1>
 
+    <p th:text="${user.getId()}">VALUE</p>
+    <p th:text="${user.getUsername()}">VALUE</p>
+    <p th:text="${user.getName()}">VALUE</p>
+    <p th:text="${user.getSurname()}">VALUE</p>
+    <p th:text="${user.getAge()}">VALUE</p>
+    <p th:each="role: ${user.getRoles()}">
+        <a th:text="${role.getName()}">VALUE </a>
+    </p>
 
-</body>
+    <div sec:authorize="hasRole('ADMIN')">
+        <form method="LINK" th:action="@{/admin/{id}/edit(id=${user.getId()})}">
+            <input type="submit" value="Edit">
+        </form>
+        <br>
+        <form th:method="DELETE" th:action="@{/admin/delUser/{id}(id=${user.getId()})}">
+            <input type="submit" value="Delete">
+        </form>
+    </div>
+    </body>
 </html>
