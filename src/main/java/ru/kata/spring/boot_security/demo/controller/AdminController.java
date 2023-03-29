@@ -8,19 +8,22 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.dao.RoleDAO;
 import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import java.util.List;
+import java.util.Set;
 
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
     private final UserServiceImpl userService;
-    private final RoleDAO roleDAO;
+    private final RoleService roleService;
 
-    public AdminController(UserServiceImpl userService, RoleDAO roleDAO) {
-        this.roleDAO = roleDAO;
+
+    public AdminController(UserServiceImpl userService, RoleService roleService) {
+        this.roleService = roleService;
         this.userService = userService;
     }
 
@@ -42,13 +45,10 @@ public class AdminController {
     }
 
     @GetMapping("/new")
-    public ModelAndView newUserPage() {
-
-        User user = new User();
-        ModelAndView mav = new ModelAndView("new");
-        mav.addObject("user", user);
-        mav.addObject("allRoles", roleDAO.findAll());
-        return mav;
+    public String newUserPage(Model model) {
+        model.addAttribute("user", new User());
+        model.addAttribute("allRoles", roleService.findAll());
+        return "new";
     }
 
     @PostMapping("/adding")
@@ -58,13 +58,13 @@ public class AdminController {
     }
 
     @GetMapping("/profile/{id}/edit")
-    public String editeUserPage(@PathVariable Long id, Model model) {
+    public String editeUserPage(@PathVariable("id") Long id, Model model) {
         model.addAttribute("userUpdate", userService.getUser(id));
-        model.addAttribute("allRoles", roleDAO.findAll());
+        model.addAttribute("allRoles", roleService.findAll());
         return "edit";
     }
 
-    @PatchMapping("/updating")//@PathVariable Long id
+    @PatchMapping("/updating")
     public String updateUser(@ModelAttribute("user") User user) {
         userService.updateUser(user);
         return "redirect:/admin/users";

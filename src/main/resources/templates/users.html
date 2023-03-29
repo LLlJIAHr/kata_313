@@ -11,7 +11,6 @@
 <table th:border="1">
     <tr>
         <th>ID</th>
-        <th>Username</th>
         <th>First Name</th>
         <th>Last Name</th>
         <th>Age</th>
@@ -23,19 +22,18 @@
     </tr>
     <tr th:each="user : ${allUsers}" >
         <td><a th:text="${user.getId()}">id</a></td>
-        <td><a th:text="${user.getUsername()}">username</a></td>
         <td><a th:href="@{/admin/profile/{id}(id=${user.getId()})}" th:text="${user.getName()}">name </a></td>
         <td><a th:text="${user.getSurname()}">surname </a></td>
         <td><a th:text="${user.getAge()}">age</a></td>
         <td><a th:text="${user.getEmail()}">email</a></td>
         <td >
-            <label th:each="role: ${user.getRoles()}" th:text="${role.toString()}">
-                <label th:text="${role.toString()}"/>
+            <label th:each="role: ${user.getRoles()}" th:text="${role.getName().concat(' ')}">
+                <label th:text="${role.getName()}"/>
             </label>
         </td>
         <td>
-                <form th:method="LINK" th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
-                    <input type="submit" value="Edit">
+                <form th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
+                    <button type="submit">Edit</button>
                 </form>
         </td>
         <td>

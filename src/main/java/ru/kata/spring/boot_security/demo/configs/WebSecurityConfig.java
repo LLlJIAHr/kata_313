@@ -28,17 +28,17 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         http
                 .csrf().disable()
                 .authorizeRequests()
-//                .antMatchers("/login/**").anonymous()///
-//                .antMatchers("/admin/**").hasRole("ADMIN")//Для админов
-//                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // и для юзеров и для админов
-                .anyRequest().permitAll()
-                //.authenticated()
+                .antMatchers("/login/**").anonymous()///
+                .antMatchers("/admin/**").hasRole("ADMIN")//Для админов
+                .antMatchers("/user/**").hasAnyRole("USER", "ADMIN") // и для юзеров и для админов
+                .anyRequest()
+                .authenticated()
                 .and()
                 .formLogin()
 //                .loginPage("/login")
                 .successHandler(successUserHandler)
 //                .loginProcessingUrl("/login")///
-//                .usernameParameter("j_email") // передаем во вьюху правило логин = ж_маил и пароль = ж_пасс
+//                .usernameParameter("j_email") //
 //                .passwordParameter("j_password")
                 .permitAll()
                 .and()
@@ -52,10 +52,14 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         return new BCryptPasswordEncoder();
     }
 
+
+
     @Bean
+
     public DaoAuthenticationProvider userDetailService() {//логика создания юзеров в системе
         DaoAuthenticationProvider provider = new DaoAuthenticationProvider();
         provider.setUserDetailsService(userService);
+
         provider.setPasswordEncoder(passwordEncoder());
         return provider;
     }

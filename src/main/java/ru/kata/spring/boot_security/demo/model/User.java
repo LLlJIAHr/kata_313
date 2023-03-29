@@ -21,23 +21,23 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
-    // user может имеит несколько ролей (set)
-
-    @Column(unique = true, nullable = false)
-    private String username;
-    private String password;
+    @Column
     private String name;
+    @Column
     private String surname;
+    @Column
     private byte age;
+    @Column(name = "email",unique = true, nullable = false)
     private String email;
+    @Column
+    private String password;
 
-
-//    @ManyToMany(fetch = FetchType.EAGER)
-@ManyToMany(fetch = FetchType.LAZY)
-//@JoinTable(name = "users_roles",
-//        joinColumns = @JoinColumn(name = "user_id"),
-//        inverseJoinColumns = @JoinColumn(name = "role_id"))
+//    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
+@ManyToMany(fetch = FetchType.EAGER)
+//@ManyToMany(fetch = FetchType.LAZY)
+@JoinTable(name = "users_roles",
+        joinColumns = @JoinColumn(name = "user_id"),
+        inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
     @Override
     public String toString() {
@@ -53,6 +53,12 @@ public class User implements UserDetails {
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
     }
+
+    @Override
+    public String getUsername() {
+        return this.email;
+    }
+
     @Override
     public boolean isAccountNonExpired() {
         return true;
