@@ -40,6 +40,10 @@
             <br/>
             <br/>
             <input type="submit" value="Create!"/>
+            <br>
+            <form th:method="post" th:action="@{/logout}">
+                <button type="submit">Logout</button>
+            </form>
         </form>
     </body>
 </html>
