@@ -1,9 +1,7 @@
 package ru.kata.spring.boot_security.demo.model;
 
 
-import lombok.AllArgsConstructor;
-import lombok.Data;
-import lombok.NoArgsConstructor;
+import lombok.*;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -12,7 +10,8 @@ import java.util.Collection;
 import java.util.HashSet;
 import java.util.Set;
 
-@Data
+@Getter
+@Setter
 @Entity
 @Table(name = "users")
 @AllArgsConstructor
@@ -21,18 +20,13 @@ public class User implements UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @Column
     private String name;
-    @Column
     private String surname;
-    @Column
     private byte age;
     @Column(name = "email",unique = true, nullable = false)
     private String email;
-    @Column
     private String password;
 
-//    @ManyToMany(cascade = CascadeType.PERSIST, fetch = FetchType.EAGER)
 @ManyToMany(fetch = FetchType.EAGER)
 //@ManyToMany(fetch = FetchType.LAZY)
 @JoinTable(name = "users_roles",
@@ -48,7 +42,6 @@ public class User implements UserDetails {
                 ", age=" + age +
                 '}';
     }
-///////
     @Override
     public Collection<? extends GrantedAuthority> getAuthorities() {
         return this.roles;
@@ -78,5 +71,4 @@ public class User implements UserDetails {
     public boolean isEnabled() {
         return true;
     }
-    ///////////////////
 }

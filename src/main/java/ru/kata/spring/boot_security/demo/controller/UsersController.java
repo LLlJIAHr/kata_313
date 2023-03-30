@@ -3,8 +3,8 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
-import ru.kata.spring.boot_security.demo.model.User;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
 
 import java.security.Principal;
@@ -18,23 +18,10 @@ public class UsersController {
     public UsersController(UserServiceImpl userService) {
         this.userService = userService;
     }
-
-    // всем homePage
-    // useru только страница юзера(не может менять бд) ПО URL /USER/
-    // admin всё ПО URL /admin/
-    // добавить логаут на всех страницах с помощью таймлиф
-
-//    @GetMapping("/login")
-//    public String showLogin() {
-//        return "/login";
-//    }
-
-////////////////////////////
     @GetMapping("/profile")
     public String showUser(Principal principal, Model model) {
         model.addAttribute("user", userService.findByEmail(principal.getName()));
         return "user";
     }
-/////////////////////////
 
 }
