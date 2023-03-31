@@ -19,9 +19,12 @@ public class Role implements GrantedAuthority {
     private Long id;
     @Column(unique = true, nullable = false)
     private String name;
-
+    public String getName() {
+        return this.name.substring(5);
+    }
     @Override
     public String getAuthority() {
         return this.name;
     }
+
 }

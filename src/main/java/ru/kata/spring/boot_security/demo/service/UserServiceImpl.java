@@ -16,20 +16,21 @@ public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-    public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder) {
-
+    public UserServiceImpl(UserRepository userRepository
+            , PasswordEncoder encoder
+    ){
         this.userRepository = userRepository;
         this.encoder = encoder;
     }
     @Transactional
     public void addUser(User user) {
-
-        encoder.encode(user.getPassword());
+        user.setPassword(encoder.encode(user.getPassword()));
         userRepository.save(user);
+
     }
     @Transactional
     public void updateUser(User updatedUser) {
-        encoder.encode(updatedUser.getPassword());
+        updatedUser.setPassword(encoder.encode(updatedUser.getPassword()));
         userRepository.save(updatedUser);
     }
     @Transactional

@@ -6,25 +6,32 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
-import ru.kata.spring.boot_security.demo.service.RoleServiceImpl;
-import ru.kata.spring.boot_security.demo.service.UserServiceImpl;
+import ru.kata.spring.boot_security.demo.service.RoleService;
+import ru.kata.spring.boot_security.demo.service.UserService;
 
 
 @Controller
 @RequestMapping("/admin")
 public class AdminController {
-    private final UserServiceImpl userService;
-    private final RoleServiceImpl roleServiceImpl;
+    private final UserService userService;
+    private final RoleService roleService;
 
 
-    public AdminController(UserServiceImpl userService, RoleServiceImpl roleServiceImpl) {
-        this.roleServiceImpl = roleServiceImpl;
+    public AdminController(UserService userService, RoleService roleService) {
+        this.roleService = roleService;
         this.userService = userService;
     }
+
     @GetMapping("/users")
-    public ModelAndView showAllUsers(Model userModel) {
+    public String showAllUsers(Model userModel) {
         userModel.addAttribute("allUsers", userService.getAllUsers());
-        return new ModelAndView("users");
+        return "users";
+    }
+
+    @GetMapping
+    public ModelAndView showsAllUsers(Model userModel) {
+        userModel.addAttribute("users", userService.getAllUsers());
+        return new ModelAndView("admin-page");
     }
 
     @GetMapping("/profile/{id}")
@@ -36,7 +43,7 @@ public class AdminController {
     @GetMapping("/new")
     public String newUserPage(Model model) {
         model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleServiceImpl.findAll());
+        model.addAttribute("allRoles", roleService.findAll());
         return "new";
     }
 
@@ -49,7 +56,7 @@ public class AdminController {
     @GetMapping("/profile/{id}/edit")
     public String editeUserPage(@PathVariable("id") Long id, Model model) {
         model.addAttribute("userUpdate", userService.getUser(id));
-        model.addAttribute("allRoles", roleServiceImpl.findAll());
+        model.addAttribute("allRoles", roleService.findAll());
         return "edit";
     }
 
