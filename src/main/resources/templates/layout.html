@@ -3,7 +3,6 @@
 <head>
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
           integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
-
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
     <title>layout</title>
@@ -12,12 +11,12 @@
 <body style="height: 100%;
   overflow: hidden;">
 
-<!--style="min-width: 1490px list-group-horizontal"-->
+
 <header class="p-3 bg-dark text-white">
 
         <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
             <div class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-                mail with roles: ROLE ROLE ...
+                <b>mail </b>_with roles: ROLE ROLE ...
             </div>
             <div class="text-end">
                 <button type="submit" class="btn btn-outline-light me-2 " th:method="post" th:action="@{/logout}">Logout</button>
@@ -26,66 +25,74 @@
 
 </header>
 
-<!--<div >-->
-<!--    <button type="submit"  th:method="post" th:action="@{/logout}"></button>-->
-<!--</div>-->
-
-
-<!--height ?????????????????????? -->
-<div class="row">
-
-<div class="list-group col-3">
-<!--     style="width: 20%;height:100%;float:left;"-->
-
-
+<div style="height: 100vh">
+<div class="list-group list-group-flush" style="width: 20%;height:100%;float:left;">
         <a href="/admin" class="list-group-item list-group-item-action active" aria-current="true">Admin</a>
         <a href="/user" class="list-group-item list-group-item-action">User</a>
 </div>
-
-<div class="bg-light" >
-
-<!--     style= "min-width:80%;-->
-<!--        height: 100%;-->
-<!--        float:left;"-->
-  <h2>(space) Admin panel</h2>
-    <h2>Users table|new user</h2>
-    <hr>
-    <h2>All users</h2>
-    <hr>
-    <table class="table table-striped">
-        <thead>
-        <tr>
-            <th scope="col">#</th>
-            <th scope="col">First</th>
-            <th scope="col">Last</th>
-            <th scope="col">Handle</th>
-        </tr>
-        </thead>
-        <tbody>
-        <tr>
-            <th scope="row">1</th>
-            <td>Mark</td>
-            <td>Otto</td>
-            <td>@mdo</td>
-        </tr>
-        <tr>
-            <th scope="row">2</th>
-            <td>Jacob</td>
-            <td>Thornton</td>
-            <td>@fat</td>
-        </tr>
-        <tr>
-            <th scope="row">3</th>
-            <td colspan="2">Larry the Bird</td>
-            <td>@twitter</td>
-        </tr>
-        </tbody>
-    </table>
+<div class="bg-light" style= "min-width:80%; height: 100%; float:left; padding: 30px" >
+    <h2>Admin panel</h2>
+    <ul class="list-group list-group-horizontal" style="float: left">
+        <li class="list-group-item" style="width: 120px">Users table</li>
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item btn btn-link" style="width: 120px">New user</li>
+    </ul>
+    <ul class="list-group">
+        <li class="list-group-item bg-light">All users</li>
+        <li class="list-group-item">
+            <table class="table table-striped">
+                <thead>
+                <tr>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                    <th scope="col"></th>
+                </tr>
+                <tr>
+                    <th scope="col">ID</th>
+                    <th scope="col">First Name</th>
+                    <th scope="col">Last Name</th>
+                    <th scope="col">Age</th>
+                    <th scope="col">Email</th>
+                    <th scope="col">Role</th>
+                    <th scope="col">Edit</th>
+                    <th scope="col">Delete</th>
+                </tr>
+                </thead>
+                <tbody>
+                <tr th:each="user : ${allUsers}">
+                    <td><a th:text="${user.getId()}">id</a></td>
+                    <td><a th:href="@{/admin/profile/{id}(id=${user.getId()})}" th:text="${user.getName()}">name </a></td>
+                    <td><a th:text="${user.getSurname()}">surname </a></td>
+                    <td><a th:text="${user.getAge()}">age</a></td>
+                    <td><a th:text="${user.getEmail()}">email</a></td>
+                    <td>
+                        <label th:each="role: ${user.getRoles()}" th:text="${role.getName().concat(' ')}">
+                            <label th:text="${role.getName()}"/>
+                        </label>
+                    </td>
+                    <td>
+                        <form th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
+                            <button type="submit" class="btn btn-primary">Edit</button>
+                        </form>
+                    </td>
+                    <td>
+                        <form th:method="DELETE" th:action="@{/admin/profile/{id}/deleting(id=${user.getId()})}">
+                            <input type="submit" class="btn btn-danger" value="Delete">
+                        </form>
+                    </td>
+                </tr>
+                </tbody>
+            </table>
+        </li>
+    </ul>
 </div>
 </div>
-<!--<form th:method="post" th:action="@{/logout}">-->
-<!--    <button type="submit">Logout</button>-->
-<!--</form>-->
 
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>

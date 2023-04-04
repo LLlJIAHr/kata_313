@@ -1,6 +1,7 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
+import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -8,6 +9,8 @@ import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
+
+import java.security.Principal;
 
 
 @Controller
@@ -25,12 +28,13 @@ public class AdminController {
     @GetMapping("/users")
     public String showAllUsers(Model userModel) {
         userModel.addAttribute("allUsers", userService.getAllUsers());
-        return "users";
+        return "layout";
     }
 
     @GetMapping
-    public ModelAndView showsAllUsers(Model userModel) {
-        userModel.addAttribute("users", userService.getAllUsers());
+    public ModelAndView showsAllUsers(Model model, Principal principal) {
+        model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("current", userService.findByEmail(principal.getName()));
         return new ModelAndView("admin-page");
     }
 
