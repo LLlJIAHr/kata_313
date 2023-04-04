@@ -1,8 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:min-height="http://www.w3.org/1999/xhtml">
-<head>
-  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
-        integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+<html lang="en" xmlns:min-height="http://www.w3.org/1999/xhtml"><head>
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
   <title>Admin page</title>
@@ -16,10 +14,10 @@
 
   <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
     <div class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
-      <h4><b th:text="${current.getEmail()}">mail</b>&nbsp;with roles: <label th:each="a : ${current.getAuthorities()}"><label th:text="*{a.getAuthority().replace('ROLE_', '&nbsp;')}"/></label></h4>
+      <h4><b>admin</b>&nbsp;with roles: <label><label>&nbsp;USER</label></label><label><label>&nbsp;ADMIN</label></label></h4>
     </div>
     <div class="text-end">
-      <button type="submit" class="btn btn-outline-light me-2 " th:method="post" th:action="@{/logout}">Logout</button>
+      <button type="submit" class="btn btn-outline-light me-2 " method="post" action="/logout">Logout</button>
     </div>
   </div>
 
@@ -32,80 +30,120 @@
     <a href="/user" class="list-group-item list-group-item-action">User</a>
   </div>
 
-  <div  class="bg-light" style= "min-width:90%; height: 100%; float:left; padding: 30px">
-  <h2>Admin panel</h2>
-  <nav class="nav nav-tabs" id="nav-tab" role="tablist">
-    <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">User table</a>
-    <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false">New user</a>
-  </nav>
-  <div class="tab-content" id="nav-tabContent">
-    <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
-      <ul class="list-group">
-        <li class="list-group-item bg-light">All users</li>
-        <li class="list-group-item">
-          <table class="table table-striped">
-            <thead>
-            <tr>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-              <th scope="col"></th>
-            </tr>
-            <tr>
-              <th scope="col">ID</th>
-              <th scope="col">First Name</th>
-              <th scope="col">Last Name</th>
-              <th scope="col">Age</th>
-              <th scope="col">Email</th>
-              <th scope="col">Role</th>
-              <th scope="col">Edit</th>
-              <th scope="col">Delete</th>
-            </tr>
-            </thead>
-            <tbody>
-            <tr th:each="user : ${users}">
-              <td><a th:text="${user.getId()}">id</a></td>
-              <td><a th:href="@{/admin/profile/{id}(id=${user.getId()})}" th:text="${user.getName()}">name </a></td>
-              <td><a th:text="${user.getSurname()}">surname </a></td>
-              <td><a th:text="${user.getAge()}">age</a></td>
-              <td><a th:text="${user.getEmail()}">email</a></td>
-              <td>
-                <label th:each="role: ${user.getRoles()}" th:text="${role.getName().concat('&nbsp')}"></label>
-              </td>
-              <td>
-                <form th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
-                  <button type="submit" class="btn btn-primary">Edit</button>
-                </form>
-              </td>
-              <td>
-                <form th:method="DELETE" th:action="@{/admin/profile/{id}/deleting(id=${user.getId()})}">
-                  <input type="submit" class="btn btn-danger" value="Delete">
-                </form>
-              </td>
-            </tr>
-            </tbody>
-          </table>
-        </li>
-      </ul>
-    </div>
+  <div class="bg-light" style="min-width:90%; height: 100%; float:left; padding: 30px">
+    <h2>Admin panel</h2>
+    <nav class="nav nav-tabs" id="nav-tab" role="tablist">
+      <a class="nav-link active" id="nav-home-tab" data-bs-toggle="tab" href="#nav-home" role="tab" aria-controls="nav-home" aria-selected="true">User table</a>
+      <a class="nav-link" id="nav-profile-tab" data-bs-toggle="tab" href="#nav-profile" role="tab" aria-controls="nav-profile" aria-selected="false" tabindex="-1">New user</a>
+    </nav>
+    <div class="tab-content" id="nav-tabContent">
+      <div class="tab-pane fade active show" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
+        <ul class="list-group">
+          <li class="list-group-item bg-light">All users</li>
+          <li class="list-group-item">
+            <table class="table table-striped">
+              <thead>
+              <tr>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+                <th scope="col"></th>
+              </tr>
+              <tr>
+                <th scope="col">ID</th>
+                <th scope="col">First Name</th>
+                <th scope="col">Last Name</th>
+                <th scope="col">Age</th>
+                <th scope="col">Email</th>
+                <th scope="col">Role</th>
+                <th scope="col">Edit</th>
+                <th scope="col">Delete</th>
+              </tr>
+              </thead>
+              <tbody>
+              <tr>
+                <td><a>1</a></td>
+                <td><a href="/admin/profile/1">1</a></td>
+                <td><a>23</a></td>
+                <td><a>5</a></td>
+                <td><a>admin</a></td>
+                <td>
+                  <label>ROLE_ADMIN&nbsp;</label><label>ROLE_USER&nbsp;</label>
+                </td>
+                <td>
+                  <form action="/admin/profile/1/edit">
+                    <button type="submit" class="btn btn-primary">Edit</button>
+                  </form>
+                </td>
+                <td>
+                  <form method="post" action="/admin/profile/1/deleting"><input type="hidden" name="_method" value="DELETE">
+                    <input type="submit" class="btn btn-danger" value="Delete">
+                  </form>
+                </td>
+              </tr>
+              </tbody>
+            </table>
+          </li>
+        </ul>
+      </div>
 
-    <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
-      <h4 class="mb-3">Billing address</h4>
-      <ul class="list-group">
-        <li class="list-group-item bg-light">Add new user</li>
-        <li class="list-group-item">
-          <div>qweqweq</div>
-        </li>
-      </ul>
+      <div class="tab-pane fade" id="nav-profile" role="tabpanel" aria-labelledby="nav-profile-tab">
+        <ul class="list-group">
+          <li class="list-group-item bg-light">Add new user</li>
+          <li class="list-group-item">
+            <div>
+
+
+
+              <form class="text-sm-center" method="POST" action="/admin/adding" style="width: 200px; margin: 0 auto;">
+                <div class="mb-1">
+                  <label for="name" class="form-label "><b>First name</b></label>
+                  <input type="text" class="form-control form-control-sm" id="name" name="name" value="">
+                </div>
+                <div class="mb-1">
+                  <label for="surname" class="form-label"><b>Second name</b></label>
+                  <input type="text" class="form-control  form-control-sm" id="surname" name="surname" value="">
+                </div>
+                <div class="mb-1">
+                  <label for="age" class="form-label"><b>Age</b></label>
+                  <input type="text" class="form-control form-control-sm" id="age" name="age" value="0">
+                </div>
+                <div class="mb-1">
+                  <label for="email" class="form-label"><b>Email</b></label>
+                  <input type="email" class="form-control  form-control-sm" id="email" name="email" value="">
+                </div>
+                <div class="mb-1">
+                  <label for="password" class="form-label"><b>Password</b></label>
+                  <input type="password" class="form-control  form-control-sm" id="password" name="password" value="">
+                </div>
+                <div class="mb-1">
+                  <!--                <label for="role" th:field="*{roles}" class="form-label"><b>Role</>b></label>-->
+                  <label>
+                    <select class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="">
+                      <!--                  <option selected>Откройте это меню выбора</option>-->
+                      <option value="1">Admin</option>
+                      <option value="2" selected="">User</option>
+                    </select>
+                  </label>
+                  <!--                <input type="text"  class="form-control  form-control-sm" id="role">-->
+                </div>
+                <button type="submit" class="btn btn-success">Add new user</button>
+              </form>
+
+
+
+            </div>
+          </li>
+        </ul>
+      </div>
     </div>
   </div>
 </div>
-</div>
 <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
-</body>
-</html>
+
+</body></html>
