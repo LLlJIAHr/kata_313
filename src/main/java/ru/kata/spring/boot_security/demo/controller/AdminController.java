@@ -1,11 +1,9 @@
 package ru.kata.spring.boot_security.demo.controller;
 
 
-import org.springframework.security.core.Authentication;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
-import org.springframework.web.servlet.ModelAndView;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
@@ -25,17 +23,13 @@ public class AdminController {
         this.userService = userService;
     }
 
-    @GetMapping("/users")
-    public String showAllUsers(Model userModel) {
-        userModel.addAttribute("allUsers", userService.getAllUsers());
-        return "layout";
-    }
-
     @GetMapping
-    public ModelAndView showsAllUsers(Model model, Principal principal) {
+    public String showAllUsers(Model model, Principal principal) {
         model.addAttribute("users", userService.getAllUsers());
+        model.addAttribute("newUser", new User());
+        model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("current", userService.findByEmail(principal.getName()));
-        return new ModelAndView("admin-page");
+        return "admin-page";
     }
 
     @GetMapping("/profile/{id}")
@@ -54,7 +48,7 @@ public class AdminController {
     @PostMapping("/adding")
     public String createUser(@ModelAttribute("user") User user) {
         userService.addUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     @GetMapping("/profile/{id}/edit")
@@ -67,12 +61,12 @@ public class AdminController {
     @PatchMapping("/updating")
     public String updateUser(@ModelAttribute("user") User user) {
         userService.updateUser(user);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 
     @DeleteMapping("/profile/{id}/deleting")
     public String deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
-        return "redirect:/admin/users";
+        return "redirect:/admin";
     }
 }
