@@ -26,7 +26,8 @@ public class AdminController {
     @GetMapping
     public String showAllUsers(Model model, Principal principal) {
         model.addAttribute("users", userService.getAllUsers());
-        model.addAttribute("newUser", new User());
+        User user = new User();
+        model.addAttribute("newUser", user);
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("current", userService.findByEmail(principal.getName()));
         return "admin-page";

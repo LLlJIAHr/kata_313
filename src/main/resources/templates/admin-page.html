@@ -41,7 +41,7 @@
     <div class="tab-content" id="nav-tabContent">
       <div class="tab-pane fade show active" id="nav-home" role="tabpanel" aria-labelledby="nav-home-tab">
         <ul class="list-group">
-          <li class="list-group-item bg-light">All users</li>
+          <li class="list-group-item bg-light" >All users</li>
           <li class="list-group-item">
             <table class="table table-striped">
               <thead>
@@ -67,6 +67,7 @@
               </tr>
               </thead>
               <tbody>
+
               <tr th:each="user : ${users}">
                 <td><a th:text="${user.getId()}">id</a></td>
                 <td><a th:href="@{/admin/profile/{id}(id=${user.getId()})}" th:text="${user.getName()}">name </a></td>
@@ -77,11 +78,11 @@
                   <label th:each="role: ${user.getRoles()}" th:text="${role.getName().concat('&nbsp')}"></label>
                 </td>
                 <td>
-<!--                  modal-->
+                  <!--                  modal-->
 
-                  <button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
+                  <button type="button" th:name="${user.test()}" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#exampleModal">Edit</button>
 
-                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                  <div class="modal fade" id="exampleModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true" th:data="${user}">
                     <div class="modal-dialog">
                       <div class="modal-content">
                         <div class="modal-header">
@@ -91,19 +92,20 @@
                         <div class="modal-body">
 
                           <form class="text-sm-center" th:method="PATCH" th:action="@{/admin/updating}" th:object="${user}" style="width: 200px; margin: 0 auto;">
+
                             <div class="mb-1">
-                              <label for="id" class="form-label "><b>ID</b></label>
-                              <input type="text" th:field="*{id}" id="id" class="form-control form-control-sm"  disabled>
-                              <!--                 name="name" value="" -->
+                              <label for="id" class="form-label " ><b>ID</b></label>
+                              <input type="text" th:field="${user.getId()}" th:value="*{id}" id="id" class="form-control form-control-sm disabled" name="id" >
+                              <!--                   -->
                             </div>
                             <div class="mb-1">
                               <label for="name" class="form-label "><b>First name </b></label>
-                              <input type="text" th:field="*{name}" id="name" class="form-control form-control-sm"  >
-                              <!--                 name="name" value="" -->
+                              <input type="text" th:field="*{getName()}" name="name" th:value="*{name}" id="name" class="form-control form-control-sm"  >
+                              <!--                  -->
                             </div>
                             <div class="mb-1">
                               <label for="surname" class="form-label"><b>Second name</b></label>
-                              <input type="text" th:field="*{surname}" id="surname" class="form-control  form-control-sm"  name="surname" value="">
+                              <input type="text" th:field="*{surname}" id="surname" class="form-control  form-control-sm"  name="surname" th:value="*{surname}">
                             </div>
                             <div class="mb-1">
                               <label for="age" class="form-label"><b>Age</b></label>
@@ -111,7 +113,7 @@
                             </div>
                             <div class="mb-1">
                               <label for="email" class="form-label"><b>Email</b></label>
-                              <input type="email" th:field="*{email}" class="form-control  form-control-sm" id="email" name="email" value="">
+                              <input type="email" th:field="*{email}" class="form-control  form-control-sm" id="email" name="email" th:value="*{email}">
                             </div>
                             <div class="mb-1">
                               <label for="password" class="form-label"><b>Password</b></label>
@@ -128,7 +130,7 @@
                               </label>
                               <!--                <input type="text"  class="form-control  form-control-sm" id="role">-->
                             </div>
-<!--                            <button type="submit" class="btn btn-success">Add new user</button>-->
+                            <!--                            <button type="submit" class="btn btn-success">Add new user</button>-->
                           </form>
 
                         </div>
@@ -141,12 +143,12 @@
                   </div>
 
 
-<!--m0dal-->
+                  <!--m0dal-->
                 </td>
                 <td>
 
 
-<!--                  modal-->
+                  <!--                  modal-->
                   <form th:method="DELETE" th:action="@{/admin/profile/{id}/deleting(id=${user.getId()})}">
                     <input type="submit" class="btn btn-danger" value="Delete">
                   </form>
@@ -156,7 +158,7 @@
 
 
 
-<!--                    -->
+                  <!--                    -->
 
 
                 </td>
@@ -178,7 +180,7 @@
                 <div class="mb-1">
                   <label for="new-name" class="form-label "><b>First name </b></label>
                   <input type="text" th:field="*{name}" id="new-name" class="form-control form-control-sm"  >
-<!--                 name="name" value="" -->
+                  <!--                 name="name" value="" -->
                 </div>
                 <div class="mb-1">
                   <label for="new-surname" class="form-label"><b>Second name</b></label>
@@ -202,7 +204,7 @@
                     <select  name="new-roles" class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="">
                       <!--                  <option selected>Откройте это меню выбора</option>-->
                       <option th:each="role : ${allRoles}" th:field="*{roles}" th:text="${role.name}" th:value="${role.getId()}"></option>
-<!--                      <option value="2" selected="">User</option>-->
+                      <!--                      <option value="2" selected="">User</option>-->
                     </select>
                   </label>
                   <!--                <input type="text"  class="form-control  form-control-sm" id="role">-->

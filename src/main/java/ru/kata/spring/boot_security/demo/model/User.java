@@ -17,6 +17,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 public class User implements UserDetails {
+
+    public void test() {
+        System.out.println(id);
+    }
+
+    public User getThis() {
+        return this;
+    }
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
