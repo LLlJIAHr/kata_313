@@ -10,15 +10,14 @@ import ru.kata.spring.boot_security.demo.repository.UserRepository;
 
 import javax.transaction.Transactional;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class UserServiceImpl implements UserDetailsService, UserService {
 
     private final UserRepository userRepository;
     private final PasswordEncoder encoder;
-    public UserServiceImpl(UserRepository userRepository
-            , PasswordEncoder encoder
-    ){
+    public UserServiceImpl(UserRepository userRepository, PasswordEncoder encoder){
         this.userRepository = userRepository;
         this.encoder = encoder;
     }
@@ -45,6 +44,9 @@ public class UserServiceImpl implements UserDetailsService, UserService {
     }
     public User findByEmail(String email) {
         return userRepository.findByEmail(email);
+    }
+    public Optional<User> findById(Long id) {
+        return userRepository.findById(id);
     }
     @Override
     @Transactional

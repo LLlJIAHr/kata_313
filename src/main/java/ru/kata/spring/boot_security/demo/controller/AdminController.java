@@ -9,6 +9,7 @@ import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.security.Principal;
+import java.util.Optional;
 
 
 @Controller
@@ -26,11 +27,17 @@ public class AdminController {
     @GetMapping
     public String showAllUsers(Model model, Principal principal) {
         model.addAttribute("users", userService.getAllUsers());
-        User user = new User();
-        model.addAttribute("newUser", user);
+//        User user = ;
+        model.addAttribute("newUser", new User());
         model.addAttribute("allRoles", roleService.findAll());
         model.addAttribute("current", userService.findByEmail(principal.getName()));
         return "admin-page";
+    }
+
+    @RequestMapping("/getOne")
+    @ResponseBody
+    public User getOne(Long Id) {
+        return userService.findById(Id).get();
     }
 
     @GetMapping("/profile/{id}")
@@ -39,35 +46,43 @@ public class AdminController {
         return "user";
     }
 
-    @GetMapping("/new")
-    public String newUserPage(Model model) {
-        model.addAttribute("user", new User());
-        model.addAttribute("allRoles", roleService.findAll());
-        return "new";
-    }
+//    @GetMapping("/new")
+//    public String newUserPage(Model model) {
+//        model.addAttribute("user", new User());
+//        model.addAttribute("allRoles", roleService.findAll());
+//        return "new";
+//    }
 
     @PostMapping("/adding")
-    public String createUser(@ModelAttribute("user") User user) {
+//    @ModelAttribute("user")
+    public String createUser(User user) {
         userService.addUser(user);
         return "redirect:/admin";
     }
 
-    @GetMapping("/profile/{id}/edit")
+    @GetMapping("/edit/{id}")
     public String editeUserPage(@PathVariable("id") Long id, Model model) {
         model.addAttribute("userUpdate", userService.getUser(id));
         model.addAttribute("allRoles", roleService.findAll());
         return "edit";
     }
-
-    @PatchMapping("/updating")
-    public String updateUser(@ModelAttribute("user") User user) {
+    @PatchMapping("/updating/{id}")
+    @GetMapping("/updating")
+//
+    public String updateUser(@PathVariable("id") Long id, @ModelAttribute("useR") User user,  Model model) {
+        model.addAttribute("userUpdate", userService.getUser(id));
+        model.addAttribute("allRoles", roleService.findAll());
         userService.updateUser(user);
         return "redirect:/admin";
     }
 
-    @DeleteMapping("/profile/{id}/deleting")
-    public String deleteUser(@PathVariable Long id) {
+    @GetMapping("/deleting")
+    @DeleteMapping("/deleting")
+//    /profile/{id}
+    public String deleteUser(@PathVariable Long id) { //
         userService.deleteUser(id);
         return "redirect:/admin";
     }
+
+
 }

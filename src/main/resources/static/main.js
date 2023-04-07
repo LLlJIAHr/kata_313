@@ -5,13 +5,12 @@
 //   tooltipTriggerList.forEach(tooltipTriggerEl => {
 //     new bootstrap.Tooltip(tooltipTriggerEl)
 //   })
-// })()
-$('document').ready(function (){
+// })() // https://github.com/KindsonTheGenius/ThymeleafApp/blob/master/src/main/java/com/kindsonthegenius/thymeleafapp/controllers/StudentController.java
+$('document').ready(function () {
   $('.table .btn').on('click',function(event) {
     event.preventDefault();
 
-    var href= $(this).attr('href');
-    // https://github.com/KindsonTheGenius/ThymeleafApp/blob/master/src/main/java/com/kindsonthegenius/thymeleafapp/controllers/StudentController.java
+    let href= $(this).attr('href');
     $.get(href, function (user, status) {
       $('#idEdit').val(user.id);
       $('#nameEdit').val(user.name);
@@ -21,7 +20,6 @@ $('document').ready(function (){
       $('#roleEdit').val(user.roles);
 
     });
-
 
     $('#editModal').modal();
   });
