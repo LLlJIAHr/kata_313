@@ -2,6 +2,8 @@ package ru.kata.spring.boot_security.demo.model;
 
 
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
@@ -28,12 +30,30 @@ public class User implements UserDetails {
     private String email;
     private String password;
 
-@ManyToMany(fetch = FetchType.EAGER)
-//@ManyToMany(fetch = FetchType.LAZY)
-@JoinTable(name = "users_roles",
-        joinColumns = @JoinColumn(name = "user_id"),
-        inverseJoinColumns = @JoinColumn(name = "role_id"))
+
+    @Fetch(FetchMode.JOIN)
+    @ManyToMany
+//(fetch = FetchType.LAZY)
+    @JoinTable(name = "users_roles",
+            joinColumns = @JoinColumn(name = "user_id"),
+            inverseJoinColumns = @JoinColumn(name = "role_id"))
     private Set<Role> roles = new HashSet<>();
+    public User(String name, String surname, byte age, String email, String password) {
+        this.name=name;
+        this.surname=surname;
+        this.age=age;
+        this.email=email;
+        this.password=password;
+    }
+    public User(String name, String surname, byte age, String email, String password, Set<Role> roles) {
+        this.name=name;
+        this.surname=surname;
+        this.age=age;
+        this.email=email;
+        this.password=password;
+        this.roles=roles;
+    }
+
     @Override
     public String toString() {
         return "User{" +

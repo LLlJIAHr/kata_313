@@ -19,7 +19,7 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @GetMapping("/profile")
+    @GetMapping
     public String showUser(Principal principal, Model model) {
         model.addAttribute("user", userService.findByEmail(principal.getName()));
         return "user";

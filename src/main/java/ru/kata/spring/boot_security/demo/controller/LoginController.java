@@ -9,8 +9,4 @@ public class LoginController {
     public String login() {
         return "login";
     }
-    @GetMapping("/check")
-    public String check(){
-        return"layout";
-    }
 }

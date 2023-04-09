@@ -1,43 +1,84 @@
 <!DOCTYPE html>
-<html xmlns="http://www.w3.org/1999/xhtml" xmlns:th="https://www.thymeleaf.org"
-      xmlns:sec="https://www.thymeleaf.org/thymeleaf-extras-springsecurity3">
-    <head>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css" rel="stylesheet"
+          integrity="sha384-GLhlTQ8iRABdZLl6O3oVMWSktQOp6b7In1Zl3/Jr59b6EGGoI1aFkw7cmDA6j6gD" crossorigin="anonymous">
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+    <title>User page</title>
+
+</head>
+<body style="height: 100%;
+  overflow: hidden;">
 
 
-        <meta charset="utf-8">
-        <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
-        <title>Spring Security Example</title>
-    </head>
-    <body>
-    <h1>User, welcome spring boot security page!</h1>
+<header class="p-3 bg-dark text-white">
 
-
-    <p th:text="${user.getId()}">VALUE</p>
-    <p th:text="${user.getName()}">VALUE</p>
-    <p th:text="${user.getSurname()}">VALUE</p>
-    <p th:text="${user.getAge()}">VALUE</p>
-    <p th:text="${user.getEmail()}">VALUE</p>
-    <p>
-        <a th:each="role: ${user.getRoles()}" th:text="${role.getName().concat(' ')}">VALUE </a>
-    </p>
-
-    <div sec:authorize="hasRole('ADMIN')">
-        <form method="LINK" th:action="@{/admin/profile/{id}/edit(id=${user.getId()})}">
-            <input type="submit" value="Edit">
-        </form>
-        <br>
-        <form th:method="DELETE" th:action="@{/admin/profile/{id}/deleting(id=${user.getId()})}">
-            <input type="submit" value="Delete">
-        </form>
-        <br>
+    <div class="d-flex flex-wrap align-items-center justify-content-center justify-content-lg-start">
+        <div class="nav col-12 col-lg-auto me-lg-auto mb-2 justify-content-center mb-md-0">
+            <h4><b th:text="${user.getEmail()}">mail</b>&nbsp;with roles: <label th:each="a : ${user.getAuthorities()}"><label th:text="*{a.getAuthority().replace('ROLE_', '&nbsp;')}"/></label></h4>
+        </div>
+        <div class="text-end">
+            <a  class="btn btn-outline-light me-2 "  href="/logout">Logout</a>
+        </div>
     </div>
-    <form th:method="post" th:action="@{/logout}">
-        <button type="submit">Logout</button>
-    </form>
+
+</header>
+<!---->
+<!---->
+<!---->
+<div style="height: 100vh">
+    <!--    боковой список-->
+    <div class="list-group list-group-flush" style="width: 20%;height:100%;float:left;">
+
+        <a class="list-group-item list-group-item-action active">User</a>
+    </div>
+    <!--    боковая панель-->
 
 
 
-    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
-    </body>
+
+    <div class="bg-light" style= "min-width:80%; height: 100%; float:left; padding: 30px" >
+        <h2>User information-page</h2>
+                <ul class="list-group">
+                    <li class="list-group-item bg-light" >About user</li>
+                    <li class="list-group-item">
+
+                        <table class="table table-striped">
+                            <thead>
+                            <tr>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                                <th scope="col"></th>
+                            </tr>
+                            <tr>
+                                <th scope="col">ID</th>
+                                <th scope="col">First Name</th>
+                                <th scope="col">Last Name</th>
+                                <th scope="col">Age</th>
+                                <th scope="col">Email</th>
+                                <th scope="col">Role</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <tr>
+                                <td><a th:text="${user.getId()}">id</a></td>
+                                <td><a th:text="${user.getName()}">name </a></td>
+                                <td><a th:text="${user.getSurname()}">surname </a></td>
+                                <td><a th:text="${user.getAge()}">age</a></td>
+                                <td><a th:text="${user.getEmail()}">email</a></td>
+                                <td><label th:each="role: ${user.getRoles()}" th:text="${role.getName().concat('&nbsp')}"></label></td>
+                            </tr>
+                            </tbody>
+                        </table>
+                    </li>
+                </ul>
+    </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js" integrity="sha384-oBqDVmMz9ATKxIep9tiCxS/Z9fNfEXiDAYTujMAeBAsjFuCZSmKbSSUnQlmh/jp3" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js" integrity="sha384-mQ93GR66B00ZXjt0YO5KlohRA5SY2XofN4zfuZxLkoj1gXtW8ANNCe9d5Y3eG5eD" crossorigin="anonymous"></script>
+</body>
 </html>
