@@ -1,55 +1,24 @@
-// // /* global bootstrap: false */
-// // (() => {
-// //   'use strict'
-// //   const tooltipTriggerList = Array.from(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-// //   tooltipTriggerList.forEach(tooltipTriggerEl => {
-// //     new bootstrap.Tooltip(tooltipTriggerEl)
-// //   })
-// // })() // https://github.com/KindsonTheGenius/ThymeleafApp/blob/master/src/main/java/com/kindsonthegenius/thymeleafapp/controllers/StudentController.java
-// $('document').ready(function () {
-//   $('.table .btn').on('click',function(event) {
-//     event.preventDefault();
-//
-//     let href= $(this).attr('href');
-//     $.get(href, function (user, status) {
-//       $('#idEdit').val(user.id);
-//       $('#nameEdit').val(user.name);
-//       $('#surnameEdit').val(user.surname);
-//       $('#ageEdit').val(user.age);
-//       $('#emailEdit').val(user.email);
-//       $('#roleEdit').val(user.roleEdit);
-//     });
-//
-//     $('#editModal').modal();
-//   });
-//
-//   $('.table #deleteButton').on('click',function(event) {
-//     event.preventDefault();
-//     var href = $(this).attr('href');
-//     $('#deleteModal #delRef').attr('href', href);
-//     $('#deleteModal').modal();
-//
-//   });
-// });
+
+$(document).ready(function () {
+    showAll();
+});
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
 let table = $('#usersTable');
 let addUserForm = $('#addUserForm');
 let modal = document.getElementById('modalWindow');
-$(document).ready(function() {
-        if (adminPanel.hasClass('active') === false) {
-            adminPanel.addClass('active');
-            // $('#nav-home-tab').addClass('active');
-            // $('#nav-profile-tab').removeClass('active');
-            userPanel.removeClass('active');
-        }
-});
 
 
 // let addForm = $('#addUserForm');
 // let addForm = $('#addUserForm');
 
 function showAll() {
+    if (adminPanel.hasClass('active') === false) {
+        adminPanel.addClass('active');
+        // $('#nav-home-tab').addClass('active');
+        // $('#nav-profile-tab').removeClass('active');
+        userPanel.removeClass('active');
+    }
     table.empty();
     table.append(`
         <table class="table table-striped">
@@ -81,7 +50,7 @@ function showAll() {
         </table>`
     );
 
-    $.getJSON('https://localhost:8080/api/', function (json) {
+    $.getJSON('https://localhost:8080/api', function (json) {
         let tr = [];
 
         for (let i = 0; i <json.length; i++) {
@@ -204,7 +173,8 @@ function editModalFunc(id) {
         };
 
         modal.empty();
-        modal.innerHTML = `
+        // modal.innerHTML = `
+        modal.html(`
                  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true" >
                     <form class="text-sm-center needs-validation" id="editForm" style="width: 350px; margin: 0 auto;">
                       <div class="modal-dialog">
@@ -259,7 +229,9 @@ function editModalFunc(id) {
                         </div>
                       </div>
                     </form>
-                 </div>`;
+                 </div>`);
+// `
+
         $('#editModal').modal();
     });
 }

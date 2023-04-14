@@ -1,5 +1,6 @@
 package ru.kata.spring.boot_security.demo.controller;
 
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import ru.kata.spring.boot_security.demo.model.User;
 import ru.kata.spring.boot_security.demo.service.RoleService;
@@ -9,42 +10,40 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api/users")
+@RequestMapping("/api")
 public class RestfulController {
     
     private final UserService userService;
 
-    private final RoleService roleService;
-
-    public RestfulController(UserService userService, RoleService roleService) {
-        this.roleService = roleService;
+    public RestfulController(UserService userService) {
         this.userService = userService;
     }
 
     @GetMapping
-    public List<User> getUsers() {
-        return userService.getAllUsers();
+    public ResponseEntity<List<User>> getUsers() {
+        return ResponseEntity.ok().body(userService.getAllUsers());
     }
 
     @GetMapping("/{id}")
-    public Optional<User> getUser(@PathVariable Long id) {
-        return userService.findById(id);
+    public ResponseEntity<Optional<User>> getUser(@PathVariable Long id) {
+        return ResponseEntity.ok().body(userService.findById(id));
     }
 
     @PostMapping
-    public User addUser(@RequestBody User user) {
+    public ResponseEntity<User> addUser(@RequestBody User user) {
         userService.addUser(user);
-        return user;
+        return ResponseEntity.ok().body(user);
     }
     @PutMapping
-    public User updateUser(@RequestBody User user) {
+    public ResponseEntity<User> updateUser(@RequestBody User user) {
         userService.updateUser(user);
-        return user;
+        return ResponseEntity.ok().body(user);
     }
 
     @DeleteMapping("/{id}")
-    public void deleteUser(@PathVariable Long id) {
+    public ResponseEntity<Void> deleteUser(@PathVariable Long id) {
         userService.deleteUser(id);
+        return ResponseEntity.ok().build();
     }
 
 }

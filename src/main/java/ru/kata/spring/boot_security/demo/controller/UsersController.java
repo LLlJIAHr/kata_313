@@ -11,7 +11,7 @@ import java.security.Principal;
 
 
 @Controller
-@RequestMapping("/user")
+@RequestMapping("/api")
 public class UsersController {
     private final UserService userService;
 
@@ -19,7 +19,7 @@ public class UsersController {
         this.userService = userService;
     }
 
-    @GetMapping
+    @GetMapping("/user")
     public String showUser(Principal principal, Model model) {
         model.addAttribute("user", userService.findByEmail(principal.getName()));
         return "user";
