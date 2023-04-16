@@ -1,26 +1,11 @@
-
-$(document).ready(function () {
-    showAll();
-});
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
 let table = $('#usersTable');
 let addUserForm = $('#addUserForm');
-let modal = document.getElementById('modalWindow');
-
-
-// let addForm = $('#addUserForm');
-// let addForm = $('#addUserForm');
-
-function showAll() {
-    if (adminPanel.hasClass('active') === false) {
-        adminPanel.addClass('active');
-        // $('#nav-home-tab').addClass('active');
-        // $('#nav-profile-tab').removeClass('active');
-        userPanel.removeClass('active');
-    }
-    table.empty();
-    table.append(`
+// let modal = document.getElementById('modalWindow');
+let modal = $('#modalWindow');
+$(document).ready(function () {
+    table.html(`
         <table class="table table-striped">
             <thead>
             <tr>
@@ -44,13 +29,32 @@ function showAll() {
                 <th scope="col">Delete</th>
             </tr>
             </thead>
-            <tbody>
+            <tbody id="tbody">
 
             </tbody>
         </table>`
     );
+    showAll();});
 
-    $.getJSON('https://localhost:8080/api', function (json) {
+
+
+
+// let addForm = $('#addUserForm');
+// let addForm = $('#addUserForm');
+
+function showAll() {
+    // userPanel.empty();
+    if (adminPanel.hasClass('active') === false) {
+        adminPanel.addClass('show active');
+        // $('#nav-home-tab').addClass('active');
+        // $('#nav-profile-tab').removeClass('active');
+        userPanel.removeClass('show active');
+    }
+    // table.empty();
+
+
+    $.getJSON('http://localhost:8080/api', function (json) {
+        // $('#tbody').empty();
         let tr = [];
 
         for (let i = 0; i <json.length; i++) {
@@ -61,33 +65,36 @@ function showAll() {
                 age: json[i].age,
                 email: json[i].email,
                 password: json[i].password,
-                roles: JSON.stringify(json[i].roles.map(role => role.authority))
+                roles: json[i].roles.map(role=> role.name)
+                // roles: JSON.stringify(json[i].roles.map(role => role.name))
             }
+            tr.push(`<tr id="${user.id}">`)
+            tr.push(`<td>${user.id}</td>`)
+            tr.push(`<td>${user.name}</td>`)
+            tr.push(`<td>${user.surname}</td>`)
+            tr.push(`<td>${user.age}</td>`)
+            tr.push(`<td>${user.email}</td>`)
+            tr.push(`<td>${user.roles}</td>`)
+            tr.push(`<td><button class="btn btn-primary" onclick="editModalFunc(${user.id})">Edit</button></td>`)
+            tr.push(`<td><button class="btn btn-danger" onclick="deleteModalFunc(${user.id})">Delete</button></td>`)
+            tr.push(`</tr>`)
 
-
-        tr.push(`<tr id="${user.id}">`)
-        tr.push(`<td>${user.id}<td>`)
-        tr.push(`<td>${user.name}<td>`)
-        tr.push(`<td>${user.surname}<td>`)
-        tr.push(`<td>${user.age}<td>`)
-        tr.push(`<td>${user.email}<td>`)
-        tr.push(`<td>${user.roles}<td>`)
-        tr.push(`<td><button class="btn btn-primary" onclick="editModalFunc(${user.id})">Edit</button></td>`)
-        tr.push(`<td><button class="btn btn-danger" onclick="deleteModalFunc(${user.id})">Delete</button></td>`)
-        tr.push(`</tr>`)
         }
         $('#tbody').empty();
         $('#tbody').append($(tr.join('')));
+
+
     });
 }
 
 function newUser() {
-    if (userPanel.hasClass('active') === false) {
-        userPanel.addClass('active');
-        // $('#nav-profile-tab').addClass('active');
-        adminPanel.removeClass('active');
-        // $('#nav-home-tab').removeClass('active');
-    }
+    // adminPanel.empty();
+    // if (userPanel.hasClass('active') === false) {
+    //     userPanel.addClass('active');
+    //     // $('#nav-profile-tab').addClass('active');
+    //     adminPanel.removeClass('active');
+    //     // $('#nav-home-tab').removeClass('active');
+    // }
 
     addUserForm.empty();
     addUserForm.append(`
@@ -106,8 +113,8 @@ function newUser() {
                   <input type="text" id="age_id" class="form-control form-control-sm" value="0" required>
                 </div>
                 <div class="mb-1">
-                  <label for="new-email" class="form-label"><b>Email</b></label>
-                  <input type="email" class="form-control  form-control-sm" id="new-email" required>
+                  <label for="email_id" class="form-label"><b>Email</b></label>
+                  <input type="email" class="form-control  form-control-sm" id="email_id" required>
                 </div>
                 <div class="mb-1">
                   <label for="password_id" class="form-label"><b>Password</b></label>
@@ -148,7 +155,7 @@ function saveUser() {
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: 'https://localhost:8080/api',
+            url: 'http://localhost:8080/api',
             data: JSON.stringify(user),
             dataType: "json",
             cache: false,
@@ -157,11 +164,12 @@ function saveUser() {
             }
         })
     }
+
 }
 
 // edit modal window
 function editModalFunc(id) {
-    $.getJSON('https://localhost:8080/api/' + id, function(json) {
+    $.getJSON('http://localhost:8080/api/' + id, function(json) {
         let user = {
             id: json.id,
             name: json.name,
@@ -172,9 +180,8 @@ function editModalFunc(id) {
             roles: json.roles.map(role => role.authority)
         };
 
-        modal.empty();
-        // modal.innerHTML = `
-        modal.html(`
+        // modal.empty();
+        modal.innerHTML = `
                  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true" >
                     <form class="text-sm-center needs-validation" id="editForm" style="width: 350px; margin: 0 auto;">
                       <div class="modal-dialog">
@@ -229,10 +236,10 @@ function editModalFunc(id) {
                         </div>
                       </div>
                     </form>
-                 </div>`);
-// `
+                 </div>`;
 
-        $('#editModal').modal();
+        // $('#editModal').modal();
+        modal.modal();
     });
 }
 
@@ -257,7 +264,7 @@ function updateUser() {
     $.ajax({
         type: "PUT",
         contentType: "application/json; charset=utf-8",
-        url: 'https://localhost:8080/api/' + user.id,
+        url: 'http://localhost:8080/api/' + user.id,
         data: JSON.stringify(user),
         dataType: 'json',
         cache: false,
@@ -269,7 +276,7 @@ function updateUser() {
 
 
 function deleteModalFunc(id) {
-    $.getJSON('https://localhost:8443/api/' + id,function (json) {
+    $.getJSON('http://localhost:8080/api/' + id,function (json) {
         let user = {
             id:json.id,
             name: json.name,
@@ -279,7 +286,7 @@ function deleteModalFunc(id) {
             password: json.password,
             roles: json.roles.map(role=> role.authority)
         };
-        modal.empty();
+        // modal.empty();
         modal.innerHTML = `
         <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" >
             <form class="text-sm-center" id="deleteForm" style="width: 350px; margin: 0 auto;">
@@ -344,7 +351,7 @@ function deleteUser() {
     $.ajax({
         type: "DELETE",
         contentType: "application/json; charset=utf-8",
-        url: 'https://localhost:8443/api/delete' + id,
+        url: 'http://localhost:8080/api/delete' + id,
         data: JSON.stringify(id),
         dataType: 'json',
         cache: false,
