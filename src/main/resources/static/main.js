@@ -1,7 +1,7 @@
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
 let table = $('#usersTable');
-let tbody = $('#tbody')''
+let tbody = $('#tbody');
 let addUserForm = $('#addUserForm');
 let modal = $('.modal-content');
 $(document).ready(function () {
