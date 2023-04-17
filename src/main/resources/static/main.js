@@ -1,41 +1,12 @@
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
 let table = $('#usersTable');
-let tbody = $('#tbody');
+let body = $('#body');
 let addUserForm = $('#addUserForm');
 let modal = $('.modal-content');
-let current;
 $(document).ready(function () {
-    table.html(`
-        <table class="table table-striped">
-            <thead>
-            <tr>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-                <th scope="col"></th>
-            </tr>
-            <tr>
-                <th scope="col">ID</th>
-                <th scope="col">First Name</th>
-                <th scope="col">Last Name</th>
-                <th scope="col">Age</th>
-                <th scope="col">Email</th>
-                <th scope="col">Role</th>
-                <th scope="col">Edit</th>
-                <th scope="col">Delete</th>
-            </tr>
-            </thead>
-            <tbody id="tbody">
-
-            </tbody>
-        </table>`
-    );
-    showAll();});
+    showAll();
+});
 
 
 
@@ -47,7 +18,7 @@ function showAll() {
     }
 
     $.getJSON('http://localhost:8080/api/admin', function (json) {
-        let tr = [];
+        let trr = [];
 
         for (let i = 0; i <json.length; i++) {
             let user = {
@@ -58,30 +29,30 @@ function showAll() {
                 email: json[i].email,
                 password: json[i].password,
                 roles: json[i].roles.map(role=> role.name)
+            };
+
+            if ($('#current-mail').text() === user.email) {
+                showCurrent(user);
+
             }
 
-            // if ($('current-mail').text() === user.email) {
-            //     current = user;
-            // }
-
-            tr.push(`<tr id="${user.id}">`)
-            tr.push(`<td>${user.id}</td>`)
-            tr.push(`<td>${user.name}</td>`)
-            tr.push(`<td>${user.surname}</td>`)
-            tr.push(`<td>${user.age}</td>`)
-            tr.push(`<td>${user.email}</td>`)
-            tr.push(`<td>${user.roles}</td>`)
-            tr.push(`<td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="editModalFunc(${user.id})">Edit</button></td>`)
-            tr.push(`<td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="deleteModalFunc(${user.id})">Delete</button></td>`)
-            tr.push(`</tr>`)
+            trr.push(`<tr id="${user.id}">`);
+            trr.push(`<td>${user.id}</td>`);
+            trr.push(`<td>${user.name}</td>`);
+            trr.push(`<td>${user.surname}</td>`);
+            trr.push(`<td>${user.age}</td>`);
+            trr.push(`<td>${user.email}</td>`);
+            trr.push(`<td>${user.roles}</td>`);
+            trr.push(`<td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="editModalFunc(${user.id})">Edit</button></td>`);
+            trr.push(`<td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="deleteModalFunc(${user.id})">Delete</button></td>`);
+            trr.push(`</tr>`);
 
         }
-        tbody.empty();
-        tbody.append($(tr.join('')));
+        body.append( $( trr.join('') ))
     });
 }
 
-function showCurrent() {
+function showCurrent(current) {
     let tr = [];
     tr.push(`<tr id="${current.id}">`)
     tr.push(`<td>${current.id}</td>`)
