@@ -9,12 +9,12 @@ import java.util.List;
 import java.util.Optional;
 
 @RestController
-@RequestMapping("/api")
-public class RestfulController {
+@RequestMapping("/api/admin")
+public class AdminRestController {
     
     private final UserService userService;
 
-    public RestfulController(UserService userService) {
+    public AdminRestController(UserService userService) {
         this.userService = userService;
     }
 

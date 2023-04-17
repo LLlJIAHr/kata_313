@@ -4,6 +4,7 @@ let table = $('#usersTable');
 let tbody = $('#tbody');
 let addUserForm = $('#addUserForm');
 let modal = $('.modal-content');
+let current;
 $(document).ready(function () {
     table.html(`
         <table class="table table-striped">
@@ -38,15 +39,14 @@ $(document).ready(function () {
 
 
 
-function showAll() {
 
+function showAll() {
     if (adminPanel.hasClass('active') === false) {
         adminPanel.addClass('show active');
         userPanel.removeClass('show active');
     }
 
-
-    $.getJSON('http://localhost:8080/api', function (json) {
+    $.getJSON('http://localhost:8080/api/admin', function (json) {
         let tr = [];
 
         for (let i = 0; i <json.length; i++) {
@@ -59,6 +59,11 @@ function showAll() {
                 password: json[i].password,
                 roles: json[i].roles.map(role=> role.name)
             }
+
+            // if ($('current-mail').text() === user.email) {
+            //     current = user;
+            // }
+
             tr.push(`<tr id="${user.id}">`)
             tr.push(`<td>${user.id}</td>`)
             tr.push(`<td>${user.name}</td>`)
@@ -74,6 +79,20 @@ function showAll() {
         tbody.empty();
         tbody.append($(tr.join('')));
     });
+}
+
+function showCurrent() {
+    let tr = [];
+    tr.push(`<tr id="${current.id}">`)
+    tr.push(`<td>${current.id}</td>`)
+    tr.push(`<td>${current.name}</td>`)
+    tr.push(`<td>${current.surname}</td>`)
+    tr.push(`<td>${current.age}</td>`)
+    tr.push(`<td>${current.email}</td>`)
+    tr.push(`<td>${current.roles}</td>`)
+    tr.push(`</tr>`)
+
+    $('#current-user-table').append($(tr.join('')));
 }
 
 function newUser() {
@@ -139,7 +158,7 @@ function saveUser() {
         $.ajax({
             type: "POST",
             contentType: "application/json; charset=utf-8",
-            url: 'http://localhost:8080/api',
+            url: 'http://localhost:8080/api/admin',
             data: JSON.stringify(user),
             dataType: "json",
             cache: false,
@@ -153,7 +172,7 @@ function saveUser() {
 
 function editModalFunc(id) {
 
-    $.getJSON('http://localhost:8080/api/' + id, function(json) {
+    $.getJSON('http://localhost:8080/api/admin/' + id, function(json) {
         let user = {
             id: json.id,
             name: json.name,
@@ -239,7 +258,7 @@ function updateUser() {
         $.ajax({
             type: "PUT",
             contentType: "application/json; charset=utf-8",
-            url: 'http://localhost:8080/api',
+            url: 'http://localhost:8080/api/admin',
             ///  + user.id
             data: JSON.stringify(user),
             dataType: 'json',
@@ -253,7 +272,7 @@ function updateUser() {
 
 
 function deleteModalFunc(id) {
-    $.getJSON('http://localhost:8080/api/' + id,function (json) {
+    $.getJSON('http://localhost:8080/api/admin/' + id,function (json) {
         let user = {
             id:json.id,
             name: json.name,
@@ -316,7 +335,7 @@ function deleteUser() {
     $.ajax({
         type: "DELETE",
         contentType: "application/json; charset=utf-8",
-        url: 'http://localhost:8080/api/' + id,
+        url: 'http://localhost:8080/api/admin/' + id,
         data: JSON.stringify(id),
         dataType: 'json',
         cache: false,

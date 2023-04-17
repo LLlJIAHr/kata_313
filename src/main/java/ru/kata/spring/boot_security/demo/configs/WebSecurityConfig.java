@@ -8,6 +8,7 @@ import org.springframework.security.config.annotation.web.configuration.WebSecur
 import org.springframework.security.core.userdetails.UserDetailsService;
 import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.security.crypto.password.PasswordEncoder;
+import org.springframework.web.servlet.config.annotation.ViewControllerRegistry;
 
 
 @EnableWebSecurity
@@ -20,6 +21,10 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
         this.successUserHandler = successUserHandler;
     }
 
+
+
+
+
     @Override
     protected void configure(HttpSecurity http) throws Exception {
         http
@@ -27,7 +32,6 @@ public class WebSecurityConfig extends WebSecurityConfigurerAdapter {
                 .authorizeRequests()
                 .antMatchers("/login/**").anonymous()///
                 .antMatchers("/api/admin/**").hasRole("ADMIN").antMatchers("/api/user/**").hasAnyRole("USER", "ADMIN")
-//                .antMatchers("/api").permitAll()
                 .anyRequest()
                 .authenticated()
                 .and()
