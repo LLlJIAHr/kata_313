@@ -1,9 +1,9 @@
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
 let table = $('#usersTable');
+let tbody = $('#tbody')''
 let addUserForm = $('#addUserForm');
-// let modal = document.getElementById('modalWindow');
-let modal = $('#modalWindow');
+let modal = $('.modal-content');
 $(document).ready(function () {
     table.html(`
         <table class="table table-striped">
@@ -38,23 +38,15 @@ $(document).ready(function () {
 
 
 
-
-// let addForm = $('#addUserForm');
-// let addForm = $('#addUserForm');
-
 function showAll() {
-    // userPanel.empty();
+
     if (adminPanel.hasClass('active') === false) {
         adminPanel.addClass('show active');
-        // $('#nav-home-tab').addClass('active');
-        // $('#nav-profile-tab').removeClass('active');
         userPanel.removeClass('show active');
     }
-    // table.empty();
 
 
     $.getJSON('http://localhost:8080/api', function (json) {
-        // $('#tbody').empty();
         let tr = [];
 
         for (let i = 0; i <json.length; i++) {
@@ -66,7 +58,6 @@ function showAll() {
                 email: json[i].email,
                 password: json[i].password,
                 roles: json[i].roles.map(role=> role.name)
-                // roles: JSON.stringify(json[i].roles.map(role => role.name))
             }
             tr.push(`<tr id="${user.id}">`)
             tr.push(`<td>${user.id}</td>`)
@@ -75,26 +66,17 @@ function showAll() {
             tr.push(`<td>${user.age}</td>`)
             tr.push(`<td>${user.email}</td>`)
             tr.push(`<td>${user.roles}</td>`)
-            tr.push(`<td><button class="btn btn-primary" onclick="editModalFunc(${user.id})">Edit</button></td>`)
-            tr.push(`<td><button class="btn btn-danger" onclick="deleteModalFunc(${user.id})">Delete</button></td>`)
+            tr.push(`<td><button type="button" class="btn btn-primary" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="editModalFunc(${user.id})">Edit</button></td>`)
+            tr.push(`<td><button type="button" class="btn btn-danger" data-bs-toggle="modal" data-bs-target="#modalWindow" onclick="deleteModalFunc(${user.id})">Delete</button></td>`)
             tr.push(`</tr>`)
 
         }
-        $('#tbody').empty();
-        $('#tbody').append($(tr.join('')));
-
-
+        tbody.empty();
+        tbody.append($(tr.join('')));
     });
 }
 
 function newUser() {
-    // adminPanel.empty();
-    // if (userPanel.hasClass('active') === false) {
-    //     userPanel.addClass('active');
-    //     // $('#nav-profile-tab').addClass('active');
-    //     adminPanel.removeClass('active');
-    //     // $('#nav-home-tab').removeClass('active');
-    // }
 
     addUserForm.empty();
     addUserForm.append(`
@@ -139,7 +121,9 @@ function saveUser() {
     let roleSet = new Set();
 
     for (let i = 0; i < rolesSelect.length; i++) {
-        rolesSelect[i].value === "1" ? roleSet.add({"id": 1, "authority": "ADMIN"}) : roleSet.add({"id": 2, "authority": "USER"});
+        rolesSelect[i].value === "1"
+            ? roleSet.add({"id": 1, "name": "ROLE_ADMIN"})
+            : roleSet.add({"id": 2, "name": "ROLE_USER"});
     }
 
     let user = {
@@ -167,8 +151,8 @@ function saveUser() {
 
 }
 
-// edit modal window
 function editModalFunc(id) {
+
     $.getJSON('http://localhost:8080/api/' + id, function(json) {
         let user = {
             id: json.id,
@@ -177,69 +161,57 @@ function editModalFunc(id) {
             age: json.age,
             email: json.email,
             password: json.password,
-            roles: json.roles.map(role => role.authority)
+            roles: json.roles.map(role => role.name)
         };
 
-        // modal.empty();
-        modal.innerHTML = `
-                 <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLable" aria-hidden="true" >
-                    <form class="text-sm-center needs-validation" id="editForm" style="width: 350px; margin: 0 auto;">
-                      <div class="modal-dialog">
-                        <div class="modal-content">
-                          <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="editModalLable">Edit user</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-                          </div>
-                          <div class="modal-body">
+        modal.html(`
+                    <div class="modal-header">
+            <h1 class="modal-title fs-5" id="editModalLable">Edit user</h1>
+            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+          </div>
+          <div class="modal-body">
 
-                            <div class="mb-1">
-                              <label for="edit_id" class="form-label "><b>ID</b></label>
-                              <input type="number" value="${user.id}" id="edit_id" name="id" class="form-control form-control-sm" readOnly>
-                            </div>
+            <div class="mb-1">
+              <label for="edit_id" class="form-label "><b>ID</b></label>
+              <input type="number" value="${user.id}" id="edit_id" name="id" class="form-control form-control-sm disabled" disabled readOnly>
+            </div>
 
-                            <div class="mb-1">
-                              <label for="name" class="form-label "><b>First name </b></label>
-                              <input type="text"  id="name" class="form-control form-control-sm" name="name" value="${user.name}" required>
-                            </div>
+            <div class="mb-1">
+              <label for="edit_name" class="form-label "><b>First name </b></label>
+              <input type="text"  id="edit_name" class="form-control form-control-sm" name="name" value="${user.name}" required>
+            </div>
 
-                             <div class="mb-1">
-                              <label for="edit_surname" class="form-label"><b>Second name</b></label>
-                              <input type="text"  id="edit_surname" class="form-control  form-control-sm"  name="surname" value="${user.surname}" required>
-                            </div>
+            <div class="mb-1">
+              <label for="edit_surname" class="form-label"><b>Second name</b></label>
+              <input type="text"  id="edit_surname" class="form-control  form-control-sm"  name="surname" value="${user.surname}" required>
+            </div>
 
-                            <div class="mb-1">
-                              <label for="edit_age" class="form-label"><b>Age</b></label>
-                              <input type="text" id="edit_age" class="form-control form-control-sm"  name="age" th:value="${user.age}" required>
-                            </div>
+            <div class="mb-1">
+              <label for="edit_age" class="form-label"><b>Age</b></label>
+              <input type="text" id="edit_age" class="form-control form-control-sm"  name="age" value="${user.age}" required>
+            </div>
 
-                            <div class="mb-1">
-                              <label for="edit_email" class="form-label"><b>Email</b></label>
-                              <input type="email" class="form-control  form-control-sm" id="edit_email" name="email" th:value="${user.email}" required>
-                            </div>
-                            <div class="mb-1">
-                              <label for="edit_password" class="form-label"><b>Password</b></label>
-                              <input type="password" class="form-control form-control-sm" id="edit_password" name="password" value="" required>
-                            </div>
-                             <div class="mb-1">
-                              <label for="edit_roles" >Roles
-                                <select  name="rolesSelect[]" id="edit_roles" class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="" required>
-                                  <option value="1">ADMIN</option>
-                                  <option value="2">USER</option>
-                                </select>
-                              </label>
-                            </div>
-                            </div>
-                          <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="submit" class="btn btn-primary" onclick="updateUser(); return false" data-dismiss="modal">Edit</button>
-                          </div>
-                        </div>
-                      </div>
-                    </form>
-                 </div>`;
-
-        // $('#editModal').modal();
-        modal.modal();
+            <div class="mb-1">
+              <label for="edit_email" class="form-label"><b>Email</b></label>
+              <input type="email" class="form-control  form-control-sm" id="edit_email" name="email" value="${user.email}" required>
+            </div>
+            <div class="mb-1">
+              <label for="edit_password" class="form-label"><b>Password</b></label>
+              <input type="password" class="form-control form-control-sm" id="edit_password" name="password" value="" required>
+            </div>
+            <div class="mb-1">
+              <label for="edit_roles" >Roles
+                <select  name="rolesSelect[]" id="edit_roles" class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="" required>
+                  <option value="1">ADMIN</option>
+                  <option value="2">USER</option>
+                </select>
+              </label>
+            </div>
+          </div>
+          <div class="modal-footer">
+            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+            <button type="submit" class="btn btn-primary" onclick="updateUser(); return false" data-bs-dismiss="modal">Edit</button>
+          </div>`);
     });
 }
 
@@ -248,30 +220,35 @@ function updateUser() {
     let roleSet = new Set();
 
     for (let i = 0; i < rolesSelect.length; i++) {
-        rolesSelect[i].value === "1" ?roleSet.add({"id": 1, "role": "ADMIN"}) : roleSet.add({"id": 2, "role": "USER"})
+        rolesSelect[i].value === "1"
+            ? roleSet.add({"id": 1, "name": "ROLE_ADMIN"})
+            : roleSet.add({"id": 2, "name": "ROLE_USER"})
     }
     let user = {
-        id: $('#edit_id').val(),
-        name: $('#edit_name').val(),
-        surname: $('#edit_surname').val(),
-        age: $('#edit_age').val(),
-        email: $('#edit_email').val(),
-        password: $('#edit_password').val(),
+        id: $("#edit_id").val(),
+        name: $("#edit_name").val(),
+        surname: $("#edit_surname").val(),
+        age: $("#edit_age").val(),
+        email: $("#edit_email").val(),
+        password: $("#edit_password").val(),
         roles: Array.from(roleSet)
 
     };
 
-    $.ajax({
-        type: "PUT",
-        contentType: "application/json; charset=utf-8",
-        url: 'http://localhost:8080/api/' + user.id,
-        data: JSON.stringify(user),
-        dataType: 'json',
-        cache: false,
-        success: function () {
-            showAll();
-        }
-    })
+    if(!(Object.values(user)).includes(null)) {
+        $.ajax({
+            type: "PUT",
+            contentType: "application/json; charset=utf-8",
+            url: 'http://localhost:8080/api',
+            ///  + user.id
+            data: JSON.stringify(user),
+            dataType: 'json',
+            cache: false,
+            success: function () {
+                showAll();
+            }
+        })
+    }
 }
 
 
@@ -284,29 +261,23 @@ function deleteModalFunc(id) {
             age: json.age,
             email: json.email,
             password: json.password,
-            roles: json.roles.map(role=> role.authority)
+            roles: json.roles.map(role=> role.name)
         };
-        // modal.empty();
-        modal.innerHTML = `
-        <div class="modal fade" id="deleteModal" tabindex="-1" aria-labelledby="deleteModalLabel" aria-hidden="true" >
-            <form class="text-sm-center" id="deleteForm" style="width: 350px; margin: 0 auto;">
-    
-              <div class="modal-dialog">
-                <div class="modal-content">
+        modal.html( `
                   <div class="modal-header">
-                    <h1 class="modal-title fs-5" id="deleteModalLabel">Delete user</h1>
+                    <h1 class="modal-title fs-5" id="modalLabel">Delete user</h1>
                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
                   </div>
                   <div class="modal-body">
     
                     <div class="mb-1">
                       <label for="del_id" class="form-label disabled"><b>ID</b></label>
-                      <input type="text"  placeholder="${user.id}" value="${user.id}" id="id" name="del_id" class="form-control form-control-sm" disabled>
+                      <input type="text"  placeholder="${user.id}" value="${user.id}" id="del_id" name="id" class="form-control form-control-sm" disabled>
                     </div>
-                    <!--                                                th:field="*{name}"   -->
+                    
                     <div class="mb-1">
                       <label for="del_name" class="form-label "><b>First name </b></label>
-                      <input type="text"  id="name" class="form-control form-control-sm disabled" name="name" placeholder="${user.name}" disabled>
+                      <input type="text"  id="del_name" class="form-control form-control-sm disabled" name="name" placeholder="${user.name}" disabled>
                     </div>
     
                     <div class="mb-1">
@@ -316,12 +287,12 @@ function deleteModalFunc(id) {
     
                     <div class="mb-1">
                       <label for="del_age" class="form-label"><b>Age</b></label>
-                      <input type="text" id="del_age" class="form-control form-control-sm disabled"  name="age" placeholder="${user.age}" disabled>
+                      <input type="number" id="del_age" class="form-control form-control-sm disabled"  name="age" placeholder="${user.age}" disabled>
                     </div>
     
                     <div class="mb-1">
                       <label for="del_email" class="form-label"><b>Email</b></label>
-                      <input type="email" class="form-control  form-control-sm disabled" id="del_email" name="email" placeholder=${user.email}" disabled>
+                      <input type="email" class="form-control  form-control-sm disabled" id="del_email" name="email" placeholder="${user.email}" disabled>
                     </div>
                     <div class="mb-1">
                       <label for="del_roles" >Roles
@@ -334,24 +305,18 @@ function deleteModalFunc(id) {
                   </div>
                   <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                    <input class="btn btn-danger" onclick="deleteUser(); return false;" data-dismiss="modal" type="button" value="Delete"/>
+                    <input class="btn btn-danger" onclick="deleteUser(); return false;" data-bs-dismiss="modal" type="button" value="Delete"/>
                   </div>
-                </div>
-              </div>
-            </form>
-        </div>
-            `;
-        $('modalDelete').modal();
+            `);
     });
 }
-
 function deleteUser() {
     let id =$("#del_id").val();
 
     $.ajax({
         type: "DELETE",
         contentType: "application/json; charset=utf-8",
-        url: 'http://localhost:8080/api/delete' + id,
+        url: 'http://localhost:8080/api/' + id,
         data: JSON.stringify(id),
         dataType: 'json',
         cache: false,

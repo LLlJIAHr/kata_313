@@ -20,7 +20,7 @@ public class Role implements GrantedAuthority {
     @Column(unique = true, nullable = false)
     private String name;
     public String getName() {
-        return this.name.substring(5);
+        return this.name.replace("ROLE_", "");
     }
     @Override
     public String getAuthority() {
