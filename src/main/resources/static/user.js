@@ -1,27 +1,19 @@
-let tbody = $('#tbody');
+let tbody = $('#current-user-table');
 $(document).ready(function () {
-    $.getJSON('http://localhost:8080/api/admin', function (json) {
-        for (let i = 0; i <json.length; i++) {
-            let user = {
-                id: json[i].id,
-                name: json[i].name,
-                surname: json[i].surname,
-                age: json[i].age,
-                email: json[i].email,
-                password: json[i].password,
-                roles: json[i].roles.map(role=> role.name)
-            }
+    showCurrent();
+});
 
-            if ($('#current-mail').text() === user.email) {
-                showCurrent(user);
-            }
+function showCurrent() {
+    $.getJSON('http://localhost:8080/api/user', function (json) {
+
+        let current = {
+            id: json.id,
+            name: json.name,
+            surname: json.surname,
+            age: json.age,
+            email: json.email,
+            roles: json.roles.map(role=> role.name)
         }
-    });
-
-})
-
-
-function showCurrent(current) {
         let tr = [];
         tr.push(`<tr id="${current.id}">`)
         tr.push(`<td>${current.id}</td>`)
@@ -34,4 +26,5 @@ function showCurrent(current) {
 
         tbody.empty();
         tbody.append($(tr.join('')));
+    });
 }

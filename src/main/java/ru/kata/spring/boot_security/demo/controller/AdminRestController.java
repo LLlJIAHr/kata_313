@@ -2,7 +2,9 @@ package ru.kata.spring.boot_security.demo.controller;
 
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import ru.kata.spring.boot_security.demo.model.Role;
 import ru.kata.spring.boot_security.demo.model.User;
+import ru.kata.spring.boot_security.demo.service.RoleService;
 import ru.kata.spring.boot_security.demo.service.UserService;
 
 import java.util.List;
@@ -13,9 +15,11 @@ import java.util.Optional;
 public class AdminRestController {
     
     private final UserService userService;
+    private final RoleService roleService;
 
-    public AdminRestController(UserService userService) {
+    public AdminRestController(UserService userService, RoleService roleService) {
         this.userService = userService;
+        this.roleService = roleService;
     }
 
     @GetMapping
@@ -26,6 +30,11 @@ public class AdminRestController {
     @GetMapping("/{id}")
     public ResponseEntity<Optional<User>> getUser(@PathVariable Long id) {
         return ResponseEntity.ok().body(userService.findById(id));
+    }
+
+    @GetMapping("/roles")
+    public ResponseEntity<List<Role>> getRoles() {
+        return ResponseEntity.ok().body(roleService.findAll());
     }
 
     @PostMapping

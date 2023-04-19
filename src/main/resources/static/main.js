@@ -1,21 +1,38 @@
 let adminPanel = $('#nav-home');
 let userPanel = $('#nav-profile');
-let table = $('#usersTable');
 let body = $('#body');
-let addUserForm = $('#addUserForm');
+// let select = $('#rolesSelect')
 let modal = $('.modal-content');
-$(document).ready(function () {
-    showAll();
+let allRoles = [];
+$(document).ready(function () {showAll();});
+$.getJSON('http://localhost:8080/api/admin/roles', function (json) {
+    for (let i = 0; i <json.length; i++) {
+        allRoles.push({
+            id: json[i].id,
+            name: json[i].name,//WITHOUT ROLE_
+            authority: json[i].authority//WITH ROLE_
+        });
+    }
 });
 
 
 
+function addRolesInSelect(select) {
+
+    if(select.children().length <= 0) {
+        $.each(allRoles, function(index, value) {
+            select.append("<option value='" + value.id + "'>" + value.name + "</option>");
+        });
+    }
+}
 
 function showAll() {
     if (adminPanel.hasClass('active') === false) {
         adminPanel.addClass('show active');
         userPanel.removeClass('show active');
     }
+
+
 
     $.getJSON('http://localhost:8080/api/admin', function (json) {
         let trr = [];
@@ -31,10 +48,6 @@ function showAll() {
                 roles: json[i].roles.map(role=> role.name)
             };
 
-            if ($('#current-mail').text() === user.email) {
-                showCurrent(user);
-
-            }
 
             trr.push(`<tr id="${user.id}">`);
             trr.push(`<td>${user.id}</td>`);
@@ -48,73 +61,30 @@ function showAll() {
             trr.push(`</tr>`);
 
         }
+        body.empty();
         body.append( $( trr.join('') ))
     });
+
+
+
 }
 
-function showCurrent(current) {
-    let tr = [];
-    tr.push(`<tr id="${current.id}">`)
-    tr.push(`<td>${current.id}</td>`)
-    tr.push(`<td>${current.name}</td>`)
-    tr.push(`<td>${current.surname}</td>`)
-    tr.push(`<td>${current.age}</td>`)
-    tr.push(`<td>${current.email}</td>`)
-    tr.push(`<td>${current.roles}</td>`)
-    tr.push(`</tr>`)
-
-    $('#current-user-table').append($(tr.join('')));
-}
 
 function newUser() {
-
-    addUserForm.empty();
-    addUserForm.append(`
-    <div>
-              <form class="text-sm-center" id="newUserForm" style="width: 200px; margin: 0 auto;">
-                <div class="mb-1">
-                  <label for="name_id" class="form-label "><b>First name </b></label>
-                  <input type="text" id="name_id" class="form-control form-control-sm" required>
-                </div>
-                <div class="mb-1">
-                  <label for="surname_id" class="form-label"><b>Second name</b></label>
-                  <input type="text" id="surname_id" class="form-control  form-control-sm" required>
-                </div>
-                <div class="mb-1">
-                  <label for="age_id" class="form-label"><b>Age</b></label>
-                  <input type="text" id="age_id" class="form-control form-control-sm" value="0" required>
-                </div>
-                <div class="mb-1">
-                  <label for="email_id" class="form-label"><b>Email</b></label>
-                  <input type="email" class="form-control  form-control-sm" id="email_id" required>
-                </div>
-                <div class="mb-1">
-                  <label for="password_id" class="form-label"><b>Password</b></label>
-                  <input type="password" class="form-control form-control-sm" id="password_id" required>
-                </div>
-                <div class="mb-1">
-                  <label >Roles
-                    <select class="form-select form-select-sm" style="width: 200px; height: 45px" id="rolesSelect" multiple required>
-                        <option value="1">ADMIN</option>
-                        <option value="2">USER</option>
-                    </select>
-                  </label>
-                </div>
-                <button type="submit" class="btn btn-success" onclick="saveUser(); return false">Add new user</button>
-              </form>
-            </div>`
-    )
+    addRolesInSelect($("#rolesSelect"));
 }
 
 function saveUser() {
-    let rolesSelect = window.document.querySelectorAll('#rolesSelect option:checked');
-    let roleSet = new Set();
-
-    for (let i = 0; i < rolesSelect.length; i++) {
-        rolesSelect[i].value === "1"
-            ? roleSet.add({"id": 1, "name": "ROLE_ADMIN"})
-            : roleSet.add({"id": 2, "name": "ROLE_USER"});
-    }
+    let roles = $('#rolesSelect option:selected').map(function() {
+        let roleId = $(this).val();
+        let role = allRoles.find(function(r) {
+            return r.id == roleId;
+        });
+        return {
+            id: role.id,
+            name: role.name
+        };
+    }).get();
 
     let user = {
         name: $("#name_id").val(),
@@ -122,7 +92,7 @@ function saveUser() {
         age: $("#age_id").val(),
         email: $("#email_id").val(),
         password: $("#password_id").val(),
-        roles: Array.from(roleSet)
+        roles: roles
     };
 
     if(!(Object.values(user)).includes(null)) {
@@ -155,65 +125,68 @@ function editModalFunc(id) {
         };
 
         modal.html(`
-                    <div class="modal-header">
-            <h1 class="modal-title fs-5" id="editModalLable">Edit user</h1>
-            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
-          </div>
-          <div class="modal-body">
+            <div class="modal-header">
+                <h1 class="modal-title fs-5" id="editModalLable">Edit user</h1>
+                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Закрыть"></button>
+              </div>
+              <div class="modal-body">
+    
+                <div class="mb-1">
+                  <label for="edit_id" class="form-label "><b>ID</b></label>
+                  <input type="number" value="${user.id}" id="edit_id" name="id" class="form-control form-control-sm disabled" disabled readOnly>
+                </div>
+    
+                <div class="mb-1">
+                  <label for="edit_name" class="form-label "><b>First name </b></label>
+                  <input type="text"  id="edit_name" class="form-control form-control-sm" name="name" value="${user.name}" required>
+                </div>
+    
+                <div class="mb-1">
+                  <label for="edit_surname" class="form-label"><b>Second name</b></label>
+                  <input type="text"  id="edit_surname" class="form-control  form-control-sm"  name="surname" value="${user.surname}" required>
+                </div>
+    
+                <div class="mb-1">
+                  <label for="edit_age" class="form-label"><b>Age</b></label>
+                  <input type="text" id="edit_age" class="form-control form-control-sm"  name="age" value="${user.age}" required>
+                </div>
+    
+                <div class="mb-1">
+                  <label for="edit_email" class="form-label"><b>Email</b></label>
+                  <input type="email" class="form-control  form-control-sm" id="edit_email" name="email" value="${user.email}" required>
+                </div>
+                <div class="mb-1">
+                  <label for="edit_password" class="form-label"><b>Password</b></label>
+                  <input type="password" class="form-control form-control-sm" id="edit_password" name="password" value="" required>
+                </div>
+                <div class="mb-1">
+                  <label for="edit_roles" >Roles
+                    <select  name="rolesSelect[]" id="edit_roles" class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="" required>
+                    </select>
+                  </label>
+                </div>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                <button type="submit" class="btn btn-primary" onclick="updateUser(); return false" data-bs-dismiss="modal">Edit</button>
+              </div>`);
 
-            <div class="mb-1">
-              <label for="edit_id" class="form-label "><b>ID</b></label>
-              <input type="number" value="${user.id}" id="edit_id" name="id" class="form-control form-control-sm disabled" disabled readOnly>
-            </div>
-
-            <div class="mb-1">
-              <label for="edit_name" class="form-label "><b>First name </b></label>
-              <input type="text"  id="edit_name" class="form-control form-control-sm" name="name" value="${user.name}" required>
-            </div>
-
-            <div class="mb-1">
-              <label for="edit_surname" class="form-label"><b>Second name</b></label>
-              <input type="text"  id="edit_surname" class="form-control  form-control-sm"  name="surname" value="${user.surname}" required>
-            </div>
-
-            <div class="mb-1">
-              <label for="edit_age" class="form-label"><b>Age</b></label>
-              <input type="text" id="edit_age" class="form-control form-control-sm"  name="age" value="${user.age}" required>
-            </div>
-
-            <div class="mb-1">
-              <label for="edit_email" class="form-label"><b>Email</b></label>
-              <input type="email" class="form-control  form-control-sm" id="edit_email" name="email" value="${user.email}" required>
-            </div>
-            <div class="mb-1">
-              <label for="edit_password" class="form-label"><b>Password</b></label>
-              <input type="password" class="form-control form-control-sm" id="edit_password" name="password" value="" required>
-            </div>
-            <div class="mb-1">
-              <label for="edit_roles" >Roles
-                <select  name="rolesSelect[]" id="edit_roles" class="form-select form-select-sm" style="width: 200px; height: 45px" multiple="" required>
-                  <option value="1">ADMIN</option>
-                  <option value="2">USER</option>
-                </select>
-              </label>
-            </div>
-          </div>
-          <div class="modal-footer">
-            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-            <button type="submit" class="btn btn-primary" onclick="updateUser(); return false" data-bs-dismiss="modal">Edit</button>
-          </div>`);
+        addRolesInSelect(modal.find('.form-select'));
     });
 }
 
 function updateUser() {
-    let rolesSelect = window.document.querySelectorAll('#edit_roles');
-    let roleSet = new Set();
+    let roles = $('#edit_roles option:selected').map(function() {
+        let roleId = $(this).val();
+        let role = allRoles.find(function(r) {
+            return r.id == roleId;
+        });
+        return {
+            id: role.id,
+            name: role.name
+        };
+    }).get();
 
-    for (let i = 0; i < rolesSelect.length; i++) {
-        rolesSelect[i].value === "1"
-            ? roleSet.add({"id": 1, "name": "ROLE_ADMIN"})
-            : roleSet.add({"id": 2, "name": "ROLE_USER"})
-    }
     let user = {
         id: $("#edit_id").val(),
         name: $("#edit_name").val(),
@@ -221,7 +194,7 @@ function updateUser() {
         age: $("#edit_age").val(),
         email: $("#edit_email").val(),
         password: $("#edit_password").val(),
-        roles: Array.from(roleSet)
+        roles: roles
 
     };
 
@@ -230,7 +203,6 @@ function updateUser() {
             type: "PUT",
             contentType: "application/json; charset=utf-8",
             url: 'http://localhost:8080/api/admin',
-            ///  + user.id
             data: JSON.stringify(user),
             dataType: 'json',
             cache: false,
@@ -250,7 +222,6 @@ function deleteModalFunc(id) {
             surname: json.surname,
             age: json.age,
             email: json.email,
-            password: json.password,
             roles: json.roles.map(role=> role.name)
         };
         modal.html( `
@@ -287,8 +258,7 @@ function deleteModalFunc(id) {
                     <div class="mb-1">
                       <label for="del_roles" >Roles
                         <select  name="rolesSelect[]" id="del_roles" class="form-select form-select-sm disabled" style="width: 200px; height: 45px" multiple="" disabled>
-                          <option value="1" disabled>ADMIN</option>
-                          <option value="2" disabled>USER</option>
+
                         </select>
                       </label>
                     </div>
@@ -298,6 +268,19 @@ function deleteModalFunc(id) {
                     <input class="btn btn-danger" onclick="deleteUser(); return false;" data-bs-dismiss="modal" type="button" value="Delete"/>
                   </div>
             `);
+
+
+        $.each(user.roles, function(index1, value1) {
+            $.each(allRoles, function(index, value) {
+                if (value1 == value.name){
+                    modal.find('.form-select').append("<option value='" + value.id + "'>" + value.name + "</option>");
+                }
+
+            })
+
+
+        })
+
     });
 }
 function deleteUser() {
